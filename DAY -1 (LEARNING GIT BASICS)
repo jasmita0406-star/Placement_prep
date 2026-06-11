@@ -1,0 +1,414 @@
+Git Basics
+init
+add
+commit
+push
+
+What is Git?
+Git is a Version Control System (VCS).
+Think of it as a time machine for your code.
+
+Without Git:
+project.py
+project_final.py
+project_final_final.py
+project_final_latest.py
+project_final_latest_new.py
+
+With Git:
+Version 1
+Version 2
+Version 3
+Version 4
+You can go back to any version whenever you want.
+
+Git vs GitHub
+Many beginners confuse them.
+Git
+Software installed on your computer.
+Used for:
+Tracking changes
+Creating versions
+Branching
+Merging
+
+GitHub
+Website where Git repositories are stored online.
+Examples:
+GitHub
+GitLab
+
+Think:
+Git      = Engine
+GitHub   = Cloud Storage
+Complete Git Workflow
+
+Every day you will do:
+Create File
+    ↓
+git add
+    ↓
+git commit
+    ↓
+git push
+
+Step 1: git init
+What it does
+Creates a Git repository.
+
+Example:
+mkdir MyProject
+cd MyProject
+git init
+
+Output:
+Initialized empty Git repository
+What happens internally?
+Git creates a hidden folder:
+.git
+Structure:
+MyProject
+│
+├── app.py
+└── .git
+
+The .git folder stores:
+History
+Commits
+Branches
+Configurations
+
+Without .git, Git doesn't exist.
+
+Check hidden files:
+ls -a
+or in Windows:
+dir /a
+
+Step 2: git status
+Most important command.
+git status
+Example:
+Untracked files:
+    app.py
+
+Git tells you:
+
+New files
+Modified files
+Staged files
+
+Always run:
+git status
+before committing.
+Understanding Git Areas
+Git has 3 major areas.
+
+Working Directory
+      ↓
+Staging Area
+      ↓
+Repository
+
+Example:
+app.py
+You edit it.
+Currently:
+Working Directory
+
+Step 3: git add
+Moves files to staging area.
+git add app.py
+Now:
+Working Directory
+      ↓
+Staging Area
+
+Add everything:
+
+git add .
+
+Meaning:
+Stage all changes
+
+Check:
+git status
+Output:
+Changes to be committed
+Why Staging Area Exists?
+
+Imagine:
+You changed:
+app.py
+README.md
+notes.txt
+
+But only want to commit:
+app.py
+
+Then:
+git add app.py
+Only that file is staged.
+
+Step 4: git commit
+Creates a snapshot.
+git commit -m "Added login feature"
+
+Think:
+
+Take Photo
+Git saves current state forever.
+
+Visual:
+Commit 1
+    ↓
+Commit 2
+    ↓
+Commit 3
+
+Each commit has a unique ID.
+Example:
+
+4f9a6e2
+Commit Messages
+
+Bad:
+
+git commit -m "update"
+
+Good:
+
+git commit -m "Added binary search solution"
+
+Good:
+
+git commit -m "Fixed login validation bug"
+Step 5: git log
+
+Shows history.
+
+git log
+
+Output:
+
+commit a12345
+Author: Asmita
+Date: ...
+
+Added binary search
+
+Compact:
+
+git log --oneline
+
+Example:
+
+a12345 Added binary search
+b67890 Created project
+Step 6: GitHub Repository
+
+Create repository on GitHub.
+
+Example:
+
+LeetCode-Solutions
+
+GitHub provides:
+
+git remote add origin https://github.com/username/repo.git
+What is Origin?
+
+Remote nickname.
+
+origin
+
+means:
+
+GitHub repository address
+
+Check:
+
+git remote -v
+Step 7: git push
+
+Uploads commits to GitHub.
+
+git push origin main
+
+Meaning:
+
+push → upload
+
+origin → GitHub
+
+main → branch
+
+Visual:
+
+Local PC
+    ↓
+GitHub
+Step 8: git clone
+
+Copy repository from GitHub.
+
+git clone https://github.com/user/repo.git
+
+Result:
+
+Entire repository downloaded
+Step 9: git pull
+
+Download latest changes.
+
+git pull origin main
+
+Meaning:
+
+GitHub
+    ↓
+Your Computer
+Branches
+
+Default branch:
+
+main
+
+Think:
+
+Main Road
+
+Create side road:
+
+git branch feature-login
+
+Switch:
+
+git checkout feature-login
+
+Modern way:
+
+git switch feature-login
+
+Create + Switch:
+
+git switch -c feature-login
+
+Visual:
+
+main
+  |
+  |
+feature-login
+Merge
+
+After completing feature:
+
+git switch main
+git merge feature-login
+
+Result:
+
+feature-login
+      \
+       \
+main ---- merged
+Git Ignore
+
+Prevent files from being tracked.
+
+Create:
+
+.gitignore
+
+Example:
+
+__pycache__/
+.env
+node_modules/
+
+Git ignores them.
+
+Undo Commands
+Unstage
+git restore --staged app.py
+
+Removes from staging area.
+
+Discard Changes
+git restore app.py
+
+Danger:
+
+Deletes modifications.
+
+View Differences
+git diff
+
+Shows:
+
+- old code
++ new code
+Rename File
+git mv old.py new.py
+Delete File
+git rm file.py
+Git History Diagram
+Create File
+     ↓
+git add
+     ↓
+git commit
+     ↓
+git push
+     ↓
+GitHub
+Daily Workflow for Your LeetCode Repo
+
+Since you're following the Striver A2Z sheet:
+
+git status
+
+git add .
+
+git commit -m "Solved Two Sum"
+
+git push origin main
+
+Next day:
+
+git add .
+
+git commit -m "Solved Pascal Triangle"
+
+git push origin main
+Commands You Must Memorize
+git init
+
+git status
+
+git add .
+
+git commit -m "message"
+
+git log --oneline
+
+git remote -v
+
+git push origin main
+
+git pull origin main
+
+git clone URL
+
+git branch
+
+git switch -c branch_name
+
+git merge branch_name
+
+git diff
+
+git restore file
+
+git rm file
