@@ -1,0 +1,718 @@
+set matrix zero
+pascals triangle 
+next permutation 
+
+# 1. Set Matrix Zeroes
+## Problem
+Given a matrix, if any element is 0, set its entire row and column to 0.
+Example:
+```python
+Input:
+[
+ [1,1,1],
+ [1,0,1],
+ [1,1,1]
+]
+
+Output:
+
+[
+ [1,0,1],
+ [0,0,0],
+ [1,0,1]
+]
+```
+# Brute Force
+For every zero:
+
+1. Mark its row
+2. Mark its column
+3. Convert all marked cells to zero
+
+Use extra arrays:
+
+```python
+rows = [0]*m
+cols = [0]*n
+```
+
+Complexity:
+
+```text
+Time  : O(m*n)
+Space : O(m+n)
+```
+
+---
+
+# Better Idea
+
+Store:
+
+```python
+rows having zero
+columns having zero
+```
+
+Then update matrix.
+
+---
+
+# Optimal Idea (O(1) Space)
+
+Use:
+
+```python
+First Row
+First Column
+```
+
+as markers.
+
+---
+
+## Observation
+
+If:
+
+```python
+matrix[i][j] == 0
+```
+
+Then:
+
+```python
+matrix[i][0] = 0
+matrix[0][j] = 0
+```
+
+These become markers.
+
+---
+
+## Example
+
+```python
+[
+ [1,1,1],
+ [1,0,1],
+ [1,1,1]
+]
+```
+
+Mark:
+
+```python
+[
+ [1,0,1],
+ [0,0,1],
+ [1,1,1]
+]
+```
+
+Now use markers to fill zeros.
+
+Final:
+
+```python
+[
+ [1,0,1],
+ [0,0,0],
+ [1,0,1]
+]
+```
+
+---
+
+# Code
+
+```python
+class Solution(object):
+    def setZeroes(self, matrix):
+
+        rows = len(matrix)
+        cols = len(matrix[0])
+
+        row_zero = False
+
+        for r in range(rows):
+
+            if matrix[r][0] == 0:
+                row_zero = True
+
+            for c in range(1, cols):
+
+                if matrix[r][c] == 0:
+
+                    matrix[0][c] = 0
+                    matrix[r][0] = 0
+
+        for r in range(1, rows):
+            for c in range(1, cols):
+
+                if matrix[0][c] == 0 or matrix[r][0] == 0:
+                    matrix[r][c] = 0
+
+        if matrix[0][0] == 0:
+            for c in range(cols):
+                matrix[0][c] = 0
+
+        if row_zero:
+            for r in range(rows):
+                matrix[r][0] = 0
+```
+
+---
+
+# Pattern
+
+```text
+Matrix Marking
+In-place Storage
+```
+
+---
+
+# Complexity
+
+```text
+Time  : O(m*n)
+
+Space : O(1)
+```
+
+---
+
+# Interview Trick
+
+Ask:
+
+```text
+Can I use the matrix itself as storage?
+```
+
+This often leads to O(1) space solutions.
+
+---
+
+# 2. Pascal's Triangle
+
+## Problem
+
+Generate first n rows.
+
+Example:
+
+```python
+numRows = 5
+```
+
+Output:
+
+```python
+[
+ [1],
+ [1,1],
+ [1,2,1],
+ [1,3,3,1],
+ [1,4,6,4,1]
+]
+```
+
+---
+
+# Observation
+
+Every row:
+
+```text
+Starts with 1
+Ends with 1
+```
+
+Middle elements:
+
+```python
+current[j] =
+previous[j-1] + previous[j]
+```
+
+---
+
+# Visualization
+
+```text
+        1
+
+      1   1
+
+    1   2   1
+
+  1   3   3   1
+
+1   4   6   4   1
+```
+
+---
+
+# Dry Run
+
+Previous row:
+
+```python
+[1,3,3,1]
+```
+
+Current:
+
+```python
+1
+```
+
+Middle:
+
+```python
+1+3 = 4
+
+3+3 = 6
+
+3+1 = 4
+```
+
+Add ending 1:
+
+```python
+[1,4,6,4,1]
+```
+
+---
+
+# Code
+
+```python
+class Solution(object):
+    def generate(self, numRows):
+
+        result = [[1]]
+
+        for i in range(numRows - 1):
+
+            temp = [0] + result[-1] + [0]
+
+            row = []
+
+            for j in range(len(result[-1]) + 1):
+                row.append(temp[j] + temp[j+1])
+
+            result.append(row)
+
+        return result
+```
+
+---
+
+# Mathematical Formula
+
+Element:
+
+```python
+nCr
+```
+
+Formula:
+
+```python
+n! / (r! * (n-r)!)
+```
+
+Example:
+
+```text
+Row 4
+
+1 4 6 4 1
+```
+
+represents:
+
+```text
+4C0 4C1 4C2 4C3 4C4
+```
+
+---
+
+# Complexity
+
+```text
+Time  : O(n²)
+
+Space : O(n²)
+```
+
+---
+
+# Pattern
+
+```text
+Simulation
+Mathematics
+Combinatorics
+```
+
+---
+
+# Interview Follow-up
+
+Find only one row.
+
+Example:
+
+```python
+rowIndex = 4
+```
+
+Answer:
+
+```python
+[1,4,6,4,1]
+```
+
+Use:
+
+```python
+nCr
+```
+
+instead of generating the whole triangle.
+
+---
+
+# 3. Next Permutation
+
+## Problem
+
+Given a permutation, find the next lexicographically greater permutation.
+
+Example:
+
+```python
+[1,2,3]
+```
+
+Output:
+
+```python
+[1,3,2]
+```
+
+---
+
+# Examples
+
+```python
+[1,2,3]
+→ [1,3,2]
+```
+
+```python
+[1,3,2]
+→ [2,1,3]
+```
+
+```python
+[3,2,1]
+→ [1,2,3]
+```
+
+---
+
+# Key Observation
+
+Move from right to left.
+
+Find first element that breaks descending order.
+
+Example:
+
+```python
+[1,2,7,4,3,1]
+```
+
+From right:
+
+```text
+7 > 4 > 3 > 1
+```
+
+Find:
+
+```python
+2
+```
+
+because:
+
+```python
+2 < 7
+```
+
+This is called:
+
+```text
+Pivot
+```
+
+---
+
+# Step 1
+
+Find Pivot
+
+```python
+2
+```
+
+Index:
+
+```python
+1
+```
+
+---
+
+# Step 2
+
+Find next greater element from right.
+
+```python
+3
+```
+
+Swap:
+
+```python
+[1,3,7,4,2,1]
+```
+
+---
+
+# Step 3
+
+Reverse right portion.
+
+Current:
+
+```python
+[7,4,2,1]
+```
+
+Reverse:
+
+```python
+[1,2,4,7]
+```
+
+Result:
+
+```python
+[1,3,1,2,4,7]
+```
+
+---
+
+# Why Reverse?
+
+Right side is already in descending order.
+
+Example:
+
+```python
+7 4 3 1
+```
+
+Smallest arrangement after swap:
+
+```python
+1 3 4 7
+```
+
+Reverse gives ascending order instantly.
+
+---
+
+# Code
+
+```python
+class Solution(object):
+    def nextPermutation(self, nums):
+
+        pivot = -1
+
+        for i in range(len(nums)-2, -1, -1):
+
+            if nums[i] < nums[i+1]:
+                pivot = i
+                break
+
+        if pivot == -1:
+            nums.reverse()
+            return
+
+        for i in range(len(nums)-1, pivot, -1):
+
+            if nums[i] > nums[pivot]:
+
+                nums[i], nums[pivot] = (
+                    nums[pivot],
+                    nums[i]
+                )
+
+                break
+
+        left = pivot + 1
+        right = len(nums)-1
+
+        while left < right:
+
+            nums[left], nums[right] = (
+                nums[right],
+                nums[left]
+            )
+
+            left += 1
+            right -= 1
+```
+
+---
+
+# Complexity
+
+```text
+Time  : O(n)
+
+Space : O(1)
+```
+
+---
+
+# Pattern
+
+```text
+Permutation
+Greedy
+Two Pointers
+```
+
+---
+
+# Most Important Interview Question
+
+Why do we swap with the next greater element from the RIGHT?
+
+Example:
+
+```python
+[1,2,7,4,3,1]
+```
+
+Pivot:
+
+```python
+2
+```
+
+Possible greater numbers:
+
+```python
+7
+4
+3
+```
+
+Choose:
+
+```python
+3
+```
+
+because it is the smallest number greater than 2.
+
+This guarantees:
+
+```text
+Next permutation
+```
+
+and not a much larger permutation.
+
+---
+
+# Pattern Recognition Summary
+
+| Problem           | Pattern               |
+| ----------------- | --------------------- |
+| Set Matrix Zeroes | Matrix Marking        |
+| Pascal's Triangle | Simulation + Math     |
+| Next Permutation  | Greedy + Two Pointers |
+| Kadane            | Running Sum           |
+| Stock Buy & Sell  | Running Minimum       |
+| Sort Colors       | Three Pointers        |
+
+---
+
+# Interview Checklist
+
+### Matrix Problem?
+
+Think:
+
+```text
+Can I reuse the matrix as storage?
+```
+
+---
+
+### Triangle / Combination Problem?
+
+Think:
+
+```text
+nCr
+Pascal Identity
+```
+
+---
+
+### Rearrangement Problem?
+
+Think:
+
+```text
+Two Pointers
+Greedy
+Permutation Logic
+```
+
+---
+
+Master these six core array problems:
+
+1. Kadane's Algorithm
+2. Sort Colors
+3. Stock Buy & Sell
+4. Set Matrix Zeroes
+5. Pascal's Triangle
+6. Next Permutation
+
+Together they teach:
+
+```text
+Running Sum
+Running Minimum
+Three Pointers
+Matrix Marking
+Combinatorics
+Greedy Rearrangement
+```
+
+These patterns appear repeatedly in Google, Amazon, Microsoft, and product-company interviews.
