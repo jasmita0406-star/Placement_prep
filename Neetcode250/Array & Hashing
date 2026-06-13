@@ -1,0 +1,272 @@
+Arrays-Hashing/
+├── 01_Contains_Duplicate.py
+├── 02_Valid_Anagram.py
+├── 03_Two_Sum.py
+├── 04_Longest_Common_Prefix.py
+├── 05_Group_Anagrams.py
+├── 06_Remove_Element.py
+├── 07_Majority_Element.py
+├── 08_Design_HashSet.py
+├── 09_Design_HashMap.py
+├── 10_Sort_an_Array.py
+├── 11_Sort_Colors.py
+├── 12_Top_K_Frequent_Elements.py
+├── 13_Encode_and_Decode_Strings.py
+├── 14_Range_Sum_Query_2D_Immutable.py
+├── 15_Product_of_Array_Except_Self.py
+├── 16_Valid_Sudoku.py
+├── 17_Longest_Consecutive_Sequence.py
+├── 18_Best_Time_to_Buy_and_Sell_Stock_II.py
+├── 19_Majority_Element_II.py
+├── 20_Subarray_Sum_Equals_K.py
+├── 21_First_Missing_Positive.py
+22. concatenation of array
+
+# HashSet Pattern
+## Recognition
+Use HashSet when:
+* Need duplicate detection
+* Need O(1) lookup
+* Need existence checking
+* Need unique elements
+---
+# Core Idea
+A set stores only unique values.
+```python
+seen = set()
+```
+Operations:
+```python
+x in seen      # O(1)
+seen.add(x)    # O(1)
+seen.remove(x) # O(1)
+```
+---
+# Template
+```python
+seen = set()
+for x in nums:
+    if x in seen:
+        return True
+    seen.add(x)
+```
+---
+# Problem 1: Contains Duplicate
+## LeetCode 217
+```python
+class Solution(object):
+    def containsDuplicate(self, nums):
+
+        seen = set()
+
+        for num in nums:
+
+            if num in seen:
+                return True
+
+            seen.add(num)
+
+        return False
+```
+Complexity:
+```text
+Time  : O(n)
+Space : O(n)
+```
+---
+# Problem 2: Valid Sudoku
+## LeetCode 36
+Idea:
+Store:
+* Row values
+* Column values
+* Box values
+in sets.
+```python
+class Solution(object):
+    def isValidSudoku(self, board):
+        rows = [set() for _ in range(9)]
+        cols = [set() for _ in range(9)]
+        boxes = [set() for _ in range(9)]
+        for r in range(9):
+            for c in range(9):
+                if board[r][c] == ".":
+                    continue
+                value = board[r][c]
+                box = (r // 3) * 3 + (c // 3)
+                if value in rows[r]:
+                    return False
+                if value in cols[c]:
+                    return False
+                if value in boxes[box]:
+                    return False
+                rows[r].add(value)
+                cols[c].add(value)
+                boxes[box].add(value)
+        return True
+```
+Complexity:
+```text
+Time  : O(81)
+Space : O(81)
+```
+# Problem 3: Longest Consecutive Sequence
+## LeetCode 128
+Idea:
+Start only when:
+```python
+num - 1 not in set
+```
+Then grow sequence.
+```python
+class Solution(object):
+    def longestConsecutive(self, nums):
+        num_set = set(nums)
+        longest = 0
+        for num in num_set:
+            if num - 1 not in num_set:
+                length = 1
+                while num + length in num_set:
+                    length += 1
+                longest = max(longest, length)
+
+        return longest
+```
+Complexity:
+```text
+Time  : O(n)
+Space : O(n)
+```
+# Interview Questions
+
+1. Contains Duplicate
+2. Valid Sudoku
+3. Longest Consecutive Sequence
+4. Happy Number
+5. Intersection of Two Arrays
+
+# Revision Checklist
+When problem says:
+* Duplicate
+* Seen before
+* Unique
+* Existence
+Think:
+```python
+set()
+```
+Arrays-Hashing/02_Frequency_HashMap_Pattern.md
+
+Problems:
+
+Valid Anagram
+Group Anagrams
+Top K Frequent Elements
+
+Core template:
+
+freq = {}
+
+for x in nums:
+    freq[x] = freq.get(x, 0) + 1
+Arrays-Hashing/03_Direct_HashMap_Pattern.md
+
+Problems:
+
+Two Sum
+Design HashMap
+Design HashSet
+
+Core template:
+
+mp = {}
+
+for i, num in enumerate(nums):
+
+    need = target - num
+
+    if need in mp:
+        return [mp[need], i]
+
+    mp[num] = i
+Arrays-Hashing/04_Two_Pointers_Pattern.md
+
+Problems:
+
+Remove Element
+Sort Colors
+
+Core template:
+
+left = 0
+
+for right in range(len(nums)):
+
+    if condition:
+        nums[left], nums[right] = nums[right], nums[left]
+        left += 1
+Arrays-Hashing/05_Boyer_Moore_Pattern.md
+
+Problems:
+
+Majority Element
+Majority Element II
+
+Core template:
+
+candidate = None
+count = 0
+
+for num in nums:
+
+    if count == 0:
+        candidate = num
+
+    count += 1 if num == candidate else -1
+Arrays-Hashing/06_Prefix_Sum_Pattern.md
+
+Problems:
+
+Range Sum Query 2D
+Subarray Sum Equals K
+
+Core template:
+
+prefix = {0:1}
+
+curr = 0
+
+for num in nums:
+
+    curr += num
+
+    if curr-k in prefix:
+        count += prefix[curr-k]
+
+    prefix[curr] = prefix.get(curr,0)+1
+Arrays-Hashing/07_Prefix_Suffix_Pattern.md
+
+Problems:
+
+Product of Array Except Self
+
+Core template:
+
+answer[i] = prefix[i] * suffix[i]
+Arrays-Hashing/08_Greedy_Pattern.md
+
+Problems:
+
+Best Time to Buy and Sell Stock II
+Arrays-Hashing/09_Cyclic_Sort_Pattern.md
+
+Problems:
+
+First Missing Positive
+
+Core template:
+
+while 1 <= nums[i] <= n and nums[i] != nums[nums[i]-1]:
+
+    nums[i], nums[nums[i]-1] = \
+    nums[nums[i]-1], nums[i]
