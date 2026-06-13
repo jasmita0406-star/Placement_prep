@@ -1,0 +1,773 @@
+# Kadane's Algorithm, Sort Colors, Stock Buy & Sell
+
+
+# 1. Kadane's Algorithm (Maximum Subarray Sum)
+
+## Problem
+
+Find the contiguous subarray with the largest sum.
+
+Example:
+
+```python
+nums = [-2,1,-3,4,-1,2,1,-5,4]
+```
+
+Output:
+
+```python
+6
+```
+
+Subarray:
+
+```python
+[4,-1,2,1]
+```
+
+---
+
+## Brute Force
+
+Generate all possible subarrays and calculate their sums.
+
+```python
+for i in range(n):
+    for j in range(i, n):
+        # calculate sum
+```
+
+### Complexity
+
+```text
+Time  : O(n²) to O(n³)
+Space : O(1)
+```
+
+---
+
+## Key Observation
+
+Suppose:
+
+```python
+current_sum = -5
+```
+
+Next number:
+
+```python
+4
+```
+
+Should we continue?
+
+```python
+-5 + 4 = -1
+```
+
+No.
+
+Starting fresh is better:
+
+```python
+4
+```
+
+Therefore:
+
+```python
+current_sum = max(nums[i], current_sum + nums[i])
+```
+
+---
+
+## Kadane's Formula
+
+```python
+current_sum = max(nums[i], current_sum + nums[i])
+
+max_sum = max(max_sum, current_sum)
+```
+
+---
+
+## Dry Run
+
+```python
+nums = [-2,1,-3,4,-1,2,1,-5,4]
+```
+
+| Index | Value | Current Sum | Max Sum |
+| ----- | ----- | ----------- | ------- |
+| 0     | -2    | -2          | -2      |
+| 1     | 1     | 1           | 1       |
+| 2     | -3    | -2          | 1       |
+| 3     | 4     | 4           | 4       |
+| 4     | -1    | 3           | 4       |
+| 5     | 2     | 5           | 5       |
+| 6     | 1     | 6           | 6       |
+| 7     | -5    | 1           | 6       |
+| 8     | 4     | 5           | 6       |
+
+Answer:
+
+```python
+6
+```
+
+---
+
+## Code
+
+```python
+class Solution(object):
+    def maxSubArray(self, nums):
+
+        current_sum = nums[0]
+        max_sum = nums[0]
+
+        for i in range(1, len(nums)):
+
+            current_sum = max(
+                nums[i],
+                current_sum + nums[i]
+            )
+
+            max_sum = max(
+                max_sum,
+                current_sum
+            )
+
+        return max_sum
+```
+
+---
+
+## Why Not Sliding Window?
+
+Sliding Window needs a clear shrink condition.
+
+Example:
+
+```text
+Longest Substring Without Repeating Characters
+```
+
+When duplicate appears:
+
+```text
+Shrink window
+```
+
+Maximum Subarray has no such condition.
+
+Example:
+
+```python
+[5,-2,10]
+```
+
+Window sum decreases at -2:
+
+```python
+5 -> 3
+```
+
+If we shrink now, we miss:
+
+```python
+[5,-2,10]
+```
+
+Sum:
+
+```python
+13
+```
+
+Kadane asks:
+
+```text
+Is previous sum helping me?
+```
+
+instead of
+
+```text
+Should I shrink window?
+```
+
+---
+
+## Complexity
+
+```text
+Time  : O(n)
+Space : O(1)
+```
+
+---
+
+## Interview Pattern
+
+Used in:
+
+* Maximum Subarray
+* Maximum Profit Segment
+* Largest Continuous Sum
+* Variations of Maximum Product Subarray
+
+---
+
+# 2. Sort an Array of 0s, 1s and 2s
+
+Also called:
+
+```text
+Dutch National Flag Algorithm
+```
+
+---
+
+## Problem
+
+Input:
+
+```python
+[2,0,2,1,1,0]
+```
+
+Output:
+
+```python
+[0,0,1,1,2,2]
+```
+
+---
+
+## Brute Force
+
+Use sorting.
+
+```python
+nums.sort()
+```
+
+Complexity:
+
+```text
+O(n log n)
+```
+
+---
+
+## Optimal Idea
+
+Maintain three regions:
+
+```text
+0s | 1s | Unknown | 2s
+```
+
+Use:
+
+```python
+low
+mid
+high
+```
+
+---
+
+## Pointer Meaning
+
+```text
+0 → low-1      = 0s
+
+low → mid-1    = 1s
+
+mid → high     = unknown
+
+high+1 → end   = 2s
+```
+
+---
+
+## Rules
+
+### Case 1
+
+```python
+nums[mid] == 0
+```
+
+Move to left.
+
+```python
+swap(low, mid)
+
+low += 1
+mid += 1
+```
+
+---
+
+### Case 2
+
+```python
+nums[mid] == 1
+```
+
+Already correct.
+
+```python
+mid += 1
+```
+
+---
+
+### Case 3
+
+```python
+nums[mid] == 2
+```
+
+Move to right.
+
+```python
+swap(mid, high)
+
+high -= 1
+```
+
+Do NOT move mid.
+
+---
+
+## Why Not Increment Mid After Swapping With High?
+
+Example:
+
+```python
+[1,2,0]
+```
+
+Current:
+
+```text
+    M
+```
+
+Swap:
+
+```python
+[1,0,2]
+```
+
+Now:
+
+```text
+    M
+```
+
+A new value arrived.
+
+We must check it.
+
+Therefore:
+
+```python
+high -= 1
+```
+
+Only.
+
+---
+
+## Dry Run
+
+```python
+[2,0,2,1,1,0]
+```
+
+Step 1
+
+```python
+swap(mid, high)
+```
+
+```python
+[0,0,2,1,1,2]
+```
+
+---
+
+Step 2
+
+```python
+0 found
+```
+
+```python
+low += 1
+mid += 1
+```
+
+---
+
+Step 3
+
+```python
+0 found
+```
+
+```python
+low += 1
+mid += 1
+```
+
+---
+
+Step 4
+
+```python
+2 found
+```
+
+Swap with high.
+
+```python
+[0,0,1,1,2,2]
+```
+
+Done.
+
+---
+
+## Code
+
+```python
+class Solution(object):
+    def sortColors(self, nums):
+
+        low = 0
+        mid = 0
+        high = len(nums) - 1
+
+        while mid <= high:
+
+            if nums[mid] == 0:
+
+                nums[low], nums[mid] = nums[mid], nums[low]
+
+                low += 1
+                mid += 1
+
+            elif nums[mid] == 1:
+
+                mid += 1
+
+            else:
+
+                nums[mid], nums[high] = nums[high], nums[mid]
+
+                high -= 1
+```
+
+---
+
+## Complexity
+
+```text
+Time  : O(n)
+
+Space : O(1)
+```
+
+---
+
+## Pattern
+
+Three Pointer Pattern
+
+Used in:
+
+* Sort Colors
+* Partition Problems
+* Dutch National Flag
+* Quick Sort Partitioning
+
+---
+
+# 3. Best Time to Buy and Sell Stock
+
+---
+
+## Problem
+
+Input:
+
+```python
+prices = [7,1,5,3,6,4]
+```
+
+Output:
+
+```python
+5
+```
+
+Buy:
+
+```python
+1
+```
+
+Sell:
+
+```python
+6
+```
+
+Profit:
+
+```python
+5
+```
+
+---
+
+## Brute Force
+
+Try every pair.
+
+```python
+for i:
+    for j:
+```
+
+Complexity:
+
+```text
+O(n²)
+```
+
+---
+
+## Observation
+
+Profit:
+
+```python
+sell_price - buy_price
+```
+
+To maximize profit:
+
+```text
+Need smallest buying price before current day.
+```
+
+---
+
+## Running Minimum Pattern
+
+Maintain:
+
+```python
+min_price
+```
+
+At each day:
+
+```python
+profit = current_price - min_price
+```
+
+Update answer.
+
+---
+
+## Dry Run
+
+```python
+prices = [7,1,5,3,6,4]
+```
+
+| Price | Min Price | Profit | Max Profit |
+| ----- | --------- | ------ | ---------- |
+| 7     | 7         | 0      | 0          |
+| 1     | 1         | 0      | 0          |
+| 5     | 1         | 4      | 4          |
+| 3     | 1         | 2      | 4          |
+| 6     | 1         | 5      | 5          |
+| 4     | 1         | 3      | 5          |
+
+Answer:
+
+```python
+5
+```
+
+---
+
+## Code
+
+```python
+class Solution(object):
+    def maxProfit(self, prices):
+
+        min_price = prices[0]
+
+        max_profit = 0
+
+        for price in prices:
+
+            min_price = min(
+                min_price,
+                price
+            )
+
+            profit = price - min_price
+
+            max_profit = max(
+                max_profit,
+                profit
+            )
+
+        return max_profit
+```
+
+---
+
+## Complexity
+
+```text
+Time  : O(n)
+
+Space : O(1)
+```
+
+---
+
+## Pattern
+
+Running Minimum Pattern
+
+Used in:
+
+* Stock Buy and Sell
+* Maximum Profit Problems
+* Best Difference Problems
+* Prefix Minimum Problems
+
+---
+
+# Pattern Recognition Summary
+
+| Problem                                        | Pattern                |
+| ---------------------------------------------- | ---------------------- |
+| Kadane's Algorithm                             | Running Sum            |
+| Stock Buy & Sell                               | Running Minimum        |
+| Sort Colors                                    | Three Pointers         |
+| Move Zeroes                                    | Two Pointers           |
+| Container With Most Water                      | Two Pointers           |
+| Longest Substring Without Repeating Characters | Sliding Window         |
+| Binary Search                                  | Search Space Reduction |
+| Prefix Sum                                     | Range Queries          |
+
+---
+
+# Interview Checklist
+
+Before solving any array problem ask:
+
+### 1. Fixed Window?
+
+Examples:
+
+```text
+Maximum Sum Subarray of Size K
+```
+
+Use:
+
+```text
+Sliding Window
+```
+
+---
+
+### 2. Variable Window?
+
+Examples:
+
+```text
+Longest Substring
+Smallest Subarray
+```
+
+Use:
+
+```text
+Sliding Window
+```
+
+---
+
+### 3. Maximum Continuous Sum?
+
+Use:
+
+```text
+Kadane's Algorithm
+```
+
+---
+
+### 4. Need Smallest/Largest Seen So Far?
+
+Use:
+
+```text
+Running Min / Running Max
+```
+
+---
+
+### 5. Need Rearrangement?
+
+Use:
+
+```text
+Two Pointers
+Three Pointers
+```
+
+---
+
+### 6. Sorted Search Space?
+
+Use:
+
+```text
+Binary Search
+```
+
+---
+
+Master these patterns first:
+
+1. Running Sum (Kadane)
+2. Running Min / Max
+3. Two Pointers
+4. Sliding Window
+5. Binary Search
+6. Prefix Sum
+7. Linked Lists
+8. Trees
+9. Graphs
+10. Dynamic Programming
+
+These patterns cover the majority of coding interview problems.
