@@ -1,0 +1,334 @@
+# Day 4 - Arrays (Advanced)
+
+## Problems Solved
+
+### 1. Find the Duplicate Number
+
+**Pattern:** Floyd's Cycle Detection (Tortoise & Hare)
+
+#### Key Idea
+
+Treat array as a linked list.
+
+Example:
+
+nums = [1,3,4,2,2]
+
+```text
+0 → 1 → 3 → 2 → 4
+          ↑   ↓
+          ← 2
+```
+
+Duplicate creates a cycle.
+
+#### Optimal Code
+
+```python
+class Solution(object):
+    def findDuplicate(self, nums):
+
+        slow = nums[0]
+        fast = nums[0]
+
+        while True:
+
+            slow = nums[slow]
+            fast = nums[nums[fast]]
+
+            if slow == fast:
+                break
+
+        slow = nums[0]
+
+        while slow != fast:
+
+            slow = nums[slow]
+            fast = nums[fast]
+
+        return slow
+```
+
+#### Complexity
+
+```text
+Time  : O(n)
+Space : O(1)
+```
+
+#### Learning
+
+* Floyd Cycle Detection
+* Linked List inside Array
+* Interview favorite
+
+---
+
+### 2. Find the Repeating and Missing Number
+
+#### Example
+
+```python
+nums = [3,1,2,5,3]
+
+Output:
+[3,4]
+```
+
+3 repeats.
+
+4 is missing.
+
+---
+
+### HashMap Solution
+
+```python
+class Solution(object):
+
+    def findTwoElement(self, arr, n):
+
+        freq = {}
+
+        repeat = -1
+        missing = -1
+
+        for num in arr:
+            freq[num] = freq.get(num,0)+1
+
+        for i in range(1,n+1):
+
+            if freq.get(i,0) == 2:
+                repeat = i
+
+            if freq.get(i,0) == 0:
+                missing = i
+
+        return [repeat,missing]
+```
+
+#### Complexity
+
+```text
+Time  : O(n)
+Space : O(n)
+```
+
+---
+
+### Math Approach
+
+Expected Sum:
+
+```text
+n(n+1)/2
+```
+
+Expected Square Sum:
+
+```text
+n(n+1)(2n+1)/6
+```
+
+Used for O(1) space solution.
+
+---
+
+### Learning
+
+* Missing Number Pattern
+* Mathematical Equations
+* Frequency Counting
+
+---
+
+### 3. Inversion Count
+
+#### Example
+
+```python
+arr = [5,3,2,4,1]
+```
+
+Inversions:
+
+```text
+(5,3)
+(5,2)
+(5,4)
+(5,1)
+(3,2)
+(3,1)
+(2,1)
+(4,1)
+```
+
+Answer:
+
+```text
+8
+```
+
+---
+
+### Key Observation
+
+Brute Force:
+
+```python
+for i:
+    for j:
+```
+
+Complexity:
+
+```text
+O(n²)
+```
+
+Too slow.
+
+---
+
+### Merge Sort Insight
+
+While merging:
+
+```text
+Left Half
+Right Half
+```
+
+If:
+
+```python
+left[i] > right[j]
+```
+
+Then every remaining element in left half forms inversion.
+
+Count:
+
+```python
+mid - i + 1
+```
+
+---
+
+### Optimal Code
+
+```python
+def merge(arr, low, mid, high):
+
+    temp = []
+
+    left = low
+    right = mid + 1
+
+    count = 0
+
+    while left <= mid and right <= high:
+
+        if arr[left] <= arr[right]:
+
+            temp.append(arr[left])
+            left += 1
+
+        else:
+
+            temp.append(arr[right])
+
+            count += (mid - left + 1)
+
+            right += 1
+
+    while left <= mid:
+        temp.append(arr[left])
+        left += 1
+
+    while right <= high:
+        temp.append(arr[right])
+        right += 1
+
+    for i in range(low, high+1):
+        arr[i] = temp[i-low]
+
+    return count
+```
+
+#### Complexity
+
+```text
+Time  : O(n log n)
+Space : O(n)
+```
+
+#### Learning
+
+* Merge Sort Application
+* Counting Pairs
+* Divide and Conquer
+
+---
+
+# Day 4 Summary
+
+## Patterns Learned
+
+1. Floyd Cycle Detection
+2. Missing + Repeating Number
+3. Merge Sort Counting
+
+---
+
+## Revision Notes
+
+### Find Duplicate
+
+```text
+Array
+↓
+Linked List
+↓
+Cycle
+↓
+Floyd Algorithm
+```
+
+### Repeating & Missing
+
+```text
+Frequency Count
+or
+Math Equations
+```
+
+### Inversion Count
+
+```text
+Merge Sort
+↓
+Count During Merge
+```
+
+---
+
+## Pattern Recognition
+
+| Problem           | Pattern               |
+| ----------------- | --------------------- |
+| Find Duplicate    | Floyd Cycle Detection |
+| Repeating Missing | Math / Hashing        |
+| Inversion Count   | Merge Sort            |
+
+---
+
+## Progress
+
+Day 4 Completed ✅
+
+New Patterns Learned:
+
+* Cycle Detection
+* Mathematical Arrays
+* Merge Sort Counting
